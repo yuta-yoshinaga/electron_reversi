@@ -1,0 +1,31 @@
+.square-wrapper{
+  position :relative;
+  width :12.5%;
+    border: 1px solid #000;
+    background-color: #00FF00;
+    float:left;
+}
+
+.spacer{
+  position :relative;
+  width :90%;
+  padding-bottom :90%;
+  margin: 5% auto;
+}
+
+.content{
+  position :absolute;
+  top :0;
+  right :0;
+  bottom :0;
+  left :0;
+  border-radius: 100%;
+}
+
+.stone_white{
+    background-color: #fff;
+}
+
+.stone_black{
+    background-color: #000;
+}
