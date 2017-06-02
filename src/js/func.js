@@ -1,27 +1,19 @@
-var reversi = new Reversi(8, 8);
-var curColor = REVERSI_STS_BLACK;
+var reversiPlay = new ReversiPlay();
 $(document).ready(function () {
     // *** マスを用意 *** //
     appInit();
-    console.log(reversi);
+    reversiPlay.reset();
     // *** クリックイベント *** //
     $('.reversi_field .square-wrapper').on('click', function () {
         var curX = $(this).data('x');
         var curY = $(this).data('y');
         console.log('x = ' + curX + ',y = ' + curY);
-        if (reversi.getMasuStsEna(curColor, curY, curX) != 0) {
-            reversi.setMasuSts(curColor, curY, curX);
-            draw();
-            if (curColor == REVERSI_STS_BLACK) {
-                if (reversi.getColorEna(REVERSI_STS_WHITE) == 0){
-                    curColor = REVERSI_STS_WHITE;
-                }
-            } else if (curColor == REVERSI_STS_WHITE) {
-                if (reversi.getColorEna(REVERSI_STS_BLACK) == 0){
-                    curColor = REVERSI_STS_BLACK;
-                }
-            }
-        }
+        reversiPlay.reversiPlay(curY,curX);
+    });
+    $('.reversi_field .reset').on('click', function () {
+        reversiPlay.reset();
+    });
+    $('.reversi_field .setting').on('click', function () {
     });
 });
 
@@ -43,24 +35,79 @@ function appInit() {
         }
     }
     $('.reversi_field').append('<div class="clearfix"><\/div>');
-    draw();
+	// *** メッセージ領域配置 *** //
+    $('.reversi_field').append('<div class="cur_col_msg"><\/div>');
+    $('.reversi_field').append('<div class="cur_sts_msg"><\/div>');
+	// *** ボタン配置 *** //
+    $('.reversi_field').append('<div class="col-xs-3">&nbsp;<\/div>');
+    $('.reversi_field').append('<div class="col-xs-3"><button type="button" class="btn btn-primary btn-lg reset">リセット<\/button><\/div>');
+    $('.reversi_field').append('<div class="col-xs-3"><button type="button" class="btn btn-info btn-lg setting">設定<\/button><\/div>');
+    $('.reversi_field').append('<div class="col-xs-3">&nbsp;<\/div>');
+    $('.reversi_field').append('<div class="clearfix"><\/div>');
+    drawAll();
 }
 
-function draw() {
+function drawAll() {
     $('.reversi_field .square-wrapper').each(function (index, element) {
         var curX = $(this).data('x');
         var curY = $(this).data('y');
-        var sts = reversi.getMasuSts(curY, curX);
-        var tgtEle = $(this).find('.content');
-        if (sts == REVERSI_STS_NONE) {
-            tgtEle.removeClass('stone_white');
-            tgtEle.removeClass('stone_black');
-        } else if (sts == REVERSI_STS_BLACK) {
-            tgtEle.removeClass('stone_white');
-            tgtEle.addClass('stone_black');
-        } else if (sts == REVERSI_STS_WHITE) {
-            tgtEle.addClass('stone_white');
-            tgtEle.removeClass('stone_black');
-        }
+        drawSingle(curY, curX, REVERSI_STS_NONE, 0, '');
     });
 }
+
+function viewMsgDlg(title,msg) {
+	alert(title + '\n' + msg);
+}
+
+function drawSingle(y, x, sts, bk, text) {
+    var tgtEle = $('.reversi_field .square-wrapper[data-x="' + x + '"][data-y="' + y + '"]');
+    var tgtEle2 = tgtEle.find('.content');
+    // *** 石の状態変更 *** //
+    if (sts == REVERSI_STS_NONE) {
+        tgtEle2.removeClass('stone_white');
+        tgtEle2.removeClass('stone_black');
+    } else if (sts == REVERSI_STS_BLACK) {
+        tgtEle2.removeClass('stone_white');
+        tgtEle2.addClass('stone_black');
+    } else if (sts == REVERSI_STS_WHITE) {
+        tgtEle2.addClass('stone_white');
+        tgtEle2.removeClass('stone_black');
+    }
+    // *** マスの状態変更 *** //
+    if (bk == 1) {
+        tgtEle.removeClass('cell_back_green');
+        tgtEle.removeClass('cell_back_magenta');
+        tgtEle.removeClass('cell_back_red');
+        tgtEle.addClass('cell_back_blue');
+    } else if (bk == 2) {
+        tgtEle.removeClass('cell_back_green');
+        tgtEle.removeClass('cell_back_magenta');
+        tgtEle.addClass('cell_back_red');
+        tgtEle.removeClass('cell_back_blue');
+    } else if (bk == 3) {
+        tgtEle.removeClass('cell_back_green');
+        tgtEle.addClass('cell_back_magenta');
+        tgtEle.removeClass('cell_back_red');
+        tgtEle.removeClass('cell_back_blue');
+    } else {
+        tgtEle.addClass('cell_back_green');
+        tgtEle.removeClass('cell_back_magenta');
+        tgtEle.removeClass('cell_back_red');
+        tgtEle.removeClass('cell_back_blue');
+    }
+    // *** テキストの状態変更 *** //
+    tgtEle2.text(text);
+}
+
+function curColMsg(text) {
+    $('.cur_col_msg').text(text);
+}
+
+function curStsMsg(text) {
+    $('.cur_sts_msg').text(text);
+}
+// *** コールバック登録 *** //
+reversiPlay.setViewMsgDlgFunc(viewMsgDlg);
+reversiPlay.setDrawSingleFunc(drawSingle);
+reversiPlay.setCurColMsgFunc(curColMsg);
+reversiPlay.setCurStsMsgFunc(curStsMsg);
