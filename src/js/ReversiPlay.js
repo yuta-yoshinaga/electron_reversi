@@ -200,27 +200,46 @@ var ReversiPlay = (function () {
             }
         }
         if (update == 1) {
+            var waitTime = 0;
             if (cpuEna == 1) {
+                waitTime = this.mPlayCpuInterVal;
             }
-            for (;;) {
-                ret = this.reversiPlayCpu(tmpCol, cpuEna);
-                cpuEna = 0;
-                if (ret == 1) {
-                    if (this.mReversi.getGameEndSts() == 0) {
-                        if (this.mReversi.getColorEna(this.mCurColor) != 0) {
-                            // *** パスメッセージ *** //
-                            this.reversiPlayPass(this.mCurColor);
-                            cpuEna = 1;
-                        }
-                    }
-                    else {
-                        // *** ゲーム終了メッセージ *** //
-                        this.reversiPlayEnd();
+            var _this = this;
+            setTimeout(function (cpuEna, tmpCol) {
+                _this.reversiPlaySub(cpuEna, tmpCol);
+            }, waitTime, cpuEna, tmpCol);
+        }
+    };
+    ////////////////////////////////////////////////////////////////////////////////
+    /**	@brief			リバーシプレイサブ
+     *	@fn				public reversiPlaySub(cpuEna: number, tmpCol: number): void
+     *	@param[in]		cpuEna : number
+     *	@param[in]		tmpCol : number
+     *	@return			ありません
+     *	@author			Yuta Yoshinaga
+     *	@date			2017.06.01
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    ReversiPlay.prototype.reversiPlaySub = function (cpuEna, tmpCol) {
+        var ret;
+        for (;;) {
+            ret = this.reversiPlayCpu(tmpCol, cpuEna);
+            cpuEna = 0;
+            if (ret == 1) {
+                if (this.mReversi.getGameEndSts() == 0) {
+                    if (this.mReversi.getColorEna(this.mCurColor) != 0) {
+                        // *** パスメッセージ *** //
+                        this.reversiPlayPass(this.mCurColor);
+                        cpuEna = 1;
                     }
                 }
-                if (cpuEna == 0)
-                    break;
+                else {
+                    // *** ゲーム終了メッセージ *** //
+                    this.reversiPlayEnd();
+                }
             }
+            if (cpuEna == 0)
+                break;
         }
     };
     ////////////////////////////////////////////////////////////////////////////////
@@ -585,9 +604,16 @@ var ReversiPlay = (function () {
                 }
             }
         }
+        var waitTime = this.mPlayDrawInterVal;
+        var _this = this;
         for (var i = 0; i < this.mMasuCnt; i++) {
             for (var j = 0; j < this.mMasuCnt; j++) {
-                this.sendDrawMsg(i, j);
+                if (this.mReversi.getMasuSts(i, j) != this.mReversi.getMasuStsOld(i, j)) {
+                    setTimeout(function (i, j) {
+                        _this.sendDrawMsg(i, j);
+                    }, waitTime, i, j);
+                    waitTime += this.mPlayDrawInterVal;
+                }
             }
         }
         // *** メッセージ送信 *** //
@@ -667,24 +693,6 @@ var ReversiPlay = (function () {
         this.execMessage(LC_MSG_DRAW_END, null);
     };
     ////////////////////////////////////////////////////////////////////////////////
-    /**	@brief			スリープ実行
-     *	@fn				public sleepLocal(waitMsec : number): void
-     *	@param[in]		waitMsec : number	スリープするミリ秒
-     *	@return			ありません
-     *	@author			Yuta Yoshinaga
-     *	@date			2017.06.01
-     */
-    ////////////////////////////////////////////////////////////////////////////////
-    ReversiPlay.prototype.sleepLocal = function (waitMsec) {
-        var d1 = new Date();
-        while (true) {
-            var d2 = new Date();
-            if ((d2 - d1) > waitMsec) {
-                break;
-            }
-        }
-    };
-    ////////////////////////////////////////////////////////////////////////////////
     /**	@brief			ゲーム終了アニメーション
      *	@fn				public gameEndAnimExec() : void
      *	@return			ありません
@@ -693,7 +701,7 @@ var ReversiPlay = (function () {
      */
     ////////////////////////////////////////////////////////////////////////////////
     ReversiPlay.prototype.gameEndAnimExec = function () {
-        var bCnt, wCnt, bCnt2, wCnt2, bEnd, wEnd;
+        var bCnt, wCnt;
         if (this.mEndAnim == DEF_END_ANIM_ON) {
             bCnt = this.mReversi.getBetCnt(REVERSI_STS_BLACK);
             wCnt = this.mReversi.getBetCnt(REVERSI_STS_WHITE);
@@ -702,45 +710,54 @@ var ReversiPlay = (function () {
             this.execMessage(LC_MSG_CUR_COL_ERASE, null);
             // *** メッセージ送信 *** //
             this.execMessage(LC_MSG_CUR_STS_ERASE, null);
-            //			this.sleepLocal(this.mEndInterVal);
-            // *** マス消去 *** //
-            for (var i = 0; i < this.mMasuCnt; i++) {
-                for (var j = 0; j < this.mMasuCnt; j++) {
-                    this.mReversi.setMasuStsForcibly(REVERSI_STS_NONE, i, j);
-                }
-            }
-            // *** メッセージ送信 *** //
-            this.execMessage(LC_MSG_ERASE_ALL, null);
-            // *** マス描画 *** //
-            bCnt2 = 0;
-            wCnt2 = 0;
-            bEnd = 0;
-            wEnd = 0;
-            for (var i = 0; i < this.mMasuCnt; i++) {
-                for (var j = 0; j < this.mMasuCnt; j++) {
-                    if (bCnt2 < bCnt) {
-                        bCnt2++;
-                        this.mReversi.setMasuStsForcibly(REVERSI_STS_BLACK, i, j);
-                        this.sendDrawMsg(i, j);
-                    }
-                    else {
-                        bEnd = 1;
-                    }
-                    if (wCnt2 < wCnt) {
-                        wCnt2++;
-                        this.mReversi.setMasuStsForcibly(REVERSI_STS_WHITE, (this.mMasuCnt - 1) - i, (this.mMasuCnt - 1) - j);
-                        this.sendDrawMsg((this.mMasuCnt - 1) - i, (this.mMasuCnt - 1) - j);
-                    }
-                    else {
-                        wEnd = 1;
-                    }
-                    if (bEnd == 1 && wEnd == 1) {
-                        break;
-                    }
-                    else {
+            var _this = this;
+            setTimeout(function (bCnt, wCnt) {
+                // *** マス消去 *** //
+                for (var i = 0; i < _this.mMasuCnt; i++) {
+                    for (var j = 0; j < _this.mMasuCnt; j++) {
+                        _this.mReversi.setMasuStsForcibly(REVERSI_STS_NONE, i, j);
                     }
                 }
-            }
+                // *** メッセージ送信 *** //
+                _this.execMessage(LC_MSG_ERASE_ALL, null);
+                // *** マス描画 *** //
+                var bCnt2, wCnt2, bEnd, wEnd;
+                bCnt2 = 0;
+                wCnt2 = 0;
+                bEnd = 0;
+                wEnd = 0;
+                var waitTime = _this.mEndDrawInterVal;
+                for (var i = 0; i < _this.mMasuCnt; i++) {
+                    for (var j = 0; j < _this.mMasuCnt; j++) {
+                        if (bCnt2 < bCnt) {
+                            bCnt2++;
+                            setTimeout(function (i, j) {
+                                _this.mReversi.setMasuStsForcibly(REVERSI_STS_BLACK, i, j);
+                                _this.sendDrawMsg(i, j);
+                            }, waitTime, i, j);
+                        }
+                        else {
+                            bEnd = 1;
+                        }
+                        if (wCnt2 < wCnt) {
+                            wCnt2++;
+                            setTimeout(function (i, j) {
+                                _this.mReversi.setMasuStsForcibly(REVERSI_STS_WHITE, (_this.mMasuCnt - 1) - i, (_this.mMasuCnt - 1) - j);
+                                _this.sendDrawMsg((_this.mMasuCnt - 1) - i, (_this.mMasuCnt - 1) - j);
+                            }, waitTime, i, j);
+                        }
+                        else {
+                            wEnd = 1;
+                        }
+                        if (bEnd == 1 && wEnd == 1) {
+                            break;
+                        }
+                        else {
+                            waitTime += _this.mEndDrawInterVal;
+                        }
+                    }
+                }
+            }, this.mEndInterVal, bCnt, wCnt);
         }
     };
     ////////////////////////////////////////////////////////////////////////////////

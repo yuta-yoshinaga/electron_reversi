@@ -89,6 +89,7 @@ var Reversi = (function () {
             this.mMasuHist[i] = new ReversiHistory();
         }
         this.mMasuHistCur = 0;
+        this.mMasuStsOld = $.extend(true, [], this.mMasuSts);
         this.reset();
     }
     ////////////////////////////////////////////////////////////////////////////////
@@ -116,6 +117,7 @@ var Reversi = (function () {
         this.makeMasuSts(REVERSI_STS_BLACK);
         this.makeMasuSts(REVERSI_STS_WHITE);
         this.mMasuHistCur = 0;
+        this.mMasuStsOld = $.extend(true, [], this.mMasuSts);
     };
     ////////////////////////////////////////////////////////////////////////////////
     /**	@brief			各コマの置ける場所等のステータス作成
@@ -542,7 +544,6 @@ var Reversi = (function () {
         for (var cnt = 0; cnt < this.mMasuPointCntB; cnt++) {
             // *** 現在ステータスを一旦コピー *** //
             var tmpMasu = $.extend(true, [], this.mMasuSts);
-            ;
             var tmpMasuEnaB = $.extend(true, [], this.mMasuStsEnaB);
             var tmpMasuEnaW = $.extend(true, [], this.mMasuStsEnaW);
             tmpY = this.mMasuPointB[cnt].y;
@@ -694,7 +695,6 @@ var Reversi = (function () {
         for (var cnt = 0; cnt < this.mMasuPointCntW; cnt++) {
             // *** 現在ステータスを一旦コピー *** //
             var tmpMasu = $.extend(true, [], this.mMasuSts);
-            ;
             var tmpMasuEnaB = $.extend(true, [], this.mMasuStsEnaB);
             var tmpMasuEnaW = $.extend(true, [], this.mMasuStsEnaW);
             tmpY = this.mMasuPointW[cnt].y;
@@ -889,6 +889,22 @@ var Reversi = (function () {
         return ret;
     };
     ////////////////////////////////////////////////////////////////////////////////
+    /**	@brief			以前のマスステータスを取得
+     *	@fn				public getMasuStsOld(y : number,x : number) : number
+     *	@param[in]		y : number			取得するマスのY座標
+     *	@param[in]		x : number			取得するマスのX座標
+     *	@return			-1 : 失敗 それ以外 : マスステータス
+     *	@author			Yuta Yoshinaga
+     *	@date			2017.06.01
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    Reversi.prototype.getMasuStsOld = function (y, x) {
+        var ret = -1;
+        if (this.checkPara(y, 0, this.mMasuCnt) == 0 && this.checkPara(x, 0, this.mMasuCnt) == 0)
+            ret = this.mMasuStsOld[y][x];
+        return ret;
+    };
+    ////////////////////////////////////////////////////////////////////////////////
     /**	@brief			指定座標に指定色を置けるかチェック
      *	@fn				public getMasuStsEna(color : number,y : number,x : number) : number
      *	@param[in]		color : number		コマ色
@@ -982,6 +998,7 @@ var Reversi = (function () {
         var ret = -1;
         if (this.getMasuStsEna(color, y, x) != 0) {
             ret = 0;
+            this.mMasuStsOld = $.extend(true, [], this.mMasuSts);
             this.mMasuSts[y][x] = color;
             this.revMasuSts(color, y, x);
             this.makeMasuSts(REVERSI_STS_BLACK);
@@ -1010,6 +1027,7 @@ var Reversi = (function () {
     Reversi.prototype.setMasuStsForcibly = function (color, y, x) {
         var ret = -1;
         ret = 0;
+        this.mMasuStsOld = $.extend(true, [], this.mMasuSts);
         this.mMasuSts[y][x] = color;
         return ret;
     };
