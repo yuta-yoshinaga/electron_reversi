@@ -252,46 +252,49 @@ var ReversiPlay = (function () {
     ////////////////////////////////////////////////////////////////////////////////
     ReversiPlay.prototype.reversiPlayEnd = function () {
         if (this.mGameEndSts == 0) {
-            this.gameEndAnimExec(); // 終了アニメ実行
-            // *** ゲーム終了メッセージ *** //
-            var tmpMsg1, tmpMsg2, msgStr;
-            var blk, whi;
-            blk = this.mReversi.getBetCnt(REVERSI_STS_BLACK);
-            whi = this.mReversi.getBetCnt(REVERSI_STS_WHITE);
-            tmpMsg1 = '黒 = ' + String(blk) + ' 白 = ' + String(whi);
-            if (this.mMode == DEF_MODE_ONE) {
-                if (whi == blk)
-                    tmpMsg2 = '引き分けです。';
-                else if (whi < blk) {
-                    if (this.mCurColor == REVERSI_STS_BLACK)
-                        tmpMsg2 = 'あなたの勝ちです。';
-                    else
-                        tmpMsg2 = 'あなたの負けです。';
+            var waitTime = this.gameEndAnimExec(); // 終了アニメ実行
+            var _this = this;
+            setTimeout(function () {
+                // *** ゲーム終了メッセージ *** //
+                var tmpMsg1, tmpMsg2, msgStr;
+                var blk, whi;
+                blk = _this.mReversi.getBetCnt(REVERSI_STS_BLACK);
+                whi = _this.mReversi.getBetCnt(REVERSI_STS_WHITE);
+                tmpMsg1 = '黒 = ' + String(blk) + ' 白 = ' + String(whi);
+                if (_this.mMode == DEF_MODE_ONE) {
+                    if (whi == blk)
+                        tmpMsg2 = '引き分けです。';
+                    else if (whi < blk) {
+                        if (_this.mCurColor == REVERSI_STS_BLACK)
+                            tmpMsg2 = 'あなたの勝ちです。';
+                        else
+                            tmpMsg2 = 'あなたの負けです。';
+                    }
+                    else {
+                        if (_this.mCurColor == REVERSI_STS_WHITE)
+                            tmpMsg2 = 'あなたの勝ちです。';
+                        else
+                            tmpMsg2 = 'あなたの負けです。';
+                    }
                 }
                 else {
-                    if (this.mCurColor == REVERSI_STS_WHITE)
-                        tmpMsg2 = 'あなたの勝ちです。';
+                    if (whi == blk)
+                        tmpMsg2 = '引き分けです。';
+                    else if (whi < blk)
+                        tmpMsg2 = '黒の勝ちです。';
                     else
-                        tmpMsg2 = 'あなたの負けです。';
+                        tmpMsg2 = '白の勝ちです。';
                 }
-            }
-            else {
-                if (whi == blk)
-                    tmpMsg2 = '引き分けです。';
-                else if (whi < blk)
-                    tmpMsg2 = '黒の勝ちです。';
-                else
-                    tmpMsg2 = '白の勝ちです。';
-            }
-            msgStr = tmpMsg1 + tmpMsg2;
-            this.viewMsgDlg('ゲーム終了', msgStr);
-            if (this.mEndAnim == DEF_END_ANIM_ON) {
-                // *** メッセージ送信 *** //
-                this.execMessage(LC_MSG_CUR_COL, null);
-                // *** メッセージ送信 *** //
-                this.execMessage(LC_MSG_CUR_STS, null);
-            }
-            this.mGameEndSts = 1;
+                msgStr = tmpMsg1 + tmpMsg2;
+                _this.viewMsgDlg('ゲーム終了', msgStr);
+                if (_this.mEndAnim == DEF_END_ANIM_ON) {
+                    // *** メッセージ送信 *** //
+                    _this.execMessage(LC_MSG_CUR_COL, null);
+                    // *** メッセージ送信 *** //
+                    _this.execMessage(LC_MSG_CUR_STS, null);
+                }
+                _this.mGameEndSts = 1;
+            }, waitTime);
         }
     };
     ////////////////////////////////////////////////////////////////////////////////
@@ -694,14 +697,15 @@ var ReversiPlay = (function () {
     };
     ////////////////////////////////////////////////////////////////////////////////
     /**	@brief			ゲーム終了アニメーション
-     *	@fn				public gameEndAnimExec() : void
-     *	@return			ありません
+     *	@fn				public gameEndAnimExec() : number
+     *	@return			ウェイト時間
      *	@author			Yuta Yoshinaga
      *	@date			2017.06.01
      */
     ////////////////////////////////////////////////////////////////////////////////
     ReversiPlay.prototype.gameEndAnimExec = function () {
         var bCnt, wCnt;
+        var ret = 0;
         if (this.mEndAnim == DEF_END_ANIM_ON) {
             bCnt = this.mReversi.getBetCnt(REVERSI_STS_BLACK);
             wCnt = this.mReversi.getBetCnt(REVERSI_STS_WHITE);
@@ -758,7 +762,9 @@ var ReversiPlay = (function () {
                     }
                 }
             }, this.mEndInterVal, bCnt, wCnt);
+            ret = this.mEndInterVal + this.mEndDrawInterVal * (this.mMasuCnt * this.mMasuCnt);
         }
+        return ret;
     };
     ////////////////////////////////////////////////////////////////////////////////
     /**	@brief			描画メッセージ送信
