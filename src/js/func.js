@@ -41,7 +41,7 @@ function appInit() {
 	// *** ボタン配置 *** //
     $('.reversi_field').append('<div class="col-xs-3">&nbsp;<\/div>');
     $('.reversi_field').append('<div class="col-xs-3"><button type="button" class="btn btn-primary btn-lg reset">リセット<\/button><\/div>');
-    $('.reversi_field').append('<div class="col-xs-3"><button type="button" class="btn btn-info btn-lg setting">設定<\/button><\/div>');
+    $('.reversi_field').append('<div class="col-xs-3"><button type="button" class="btn btn-info btn-lg setting" data-toggle="modal" data-target="#appMenuModal">設定<\/button><\/div>');
     $('.reversi_field').append('<div class="col-xs-3">&nbsp;<\/div>');
     $('.reversi_field').append('<div class="clearfix"><\/div>');
     drawAll();
