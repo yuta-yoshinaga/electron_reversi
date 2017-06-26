@@ -15,39 +15,7 @@
  */
 ////////////////////////////////////////////////////////////////////////////////
 /// <reference path="Reversi.ts" />
-var DEF_MODE_ONE = 0; //!< 一人対戦
-var DEF_MODE_TWO = 1; //!< 二人対戦
-var DEF_TYPE_EASY = 0; //!< CPU 弱い
-var DEF_TYPE_NOR = 1; //!< CPU 普通
-var DEF_TYPE_HARD = 2; //!< CPU 強い
-var DEF_COLOR_BLACK = 0; //!< コマ色 黒
-var DEF_COLOR_WHITE = 1; //!< コマ色 白
-var DEF_ASSIST_OFF = 0; //!< アシスト OFF
-var DEF_ASSIST_ON = 1; //!< アシスト ON
-var DEF_GAME_SPD_FAST = 0; //!< ゲームスピード 早い
-var DEF_GAME_SPD_MID = 1; //!< ゲームスピード 普通
-var DEF_GAME_SPD_SLOW = 2; //!< ゲームスピード 遅い
-var DEF_GAME_SPD_FAST_VAL = 0; //!< ゲームスピード 早い
-var DEF_GAME_SPD_MID_VAL = 50; //!< ゲームスピード 普通
-var DEF_GAME_SPD_SLOW_VAL = 100; //!< ゲームスピード 遅い
-var DEF_GAME_SPD_FAST_VAL2 = 0; //!< ゲームスピード 早い
-var DEF_GAME_SPD_MID_VAL2 = 500; //!< ゲームスピード 普通
-var DEF_GAME_SPD_SLOW_VAL2 = 1000; //!< ゲームスピード 遅い
-var DEF_END_ANIM_OFF = 0; //!< 終了アニメーション OFF
-var DEF_END_ANIM_ON = 1; //!< 終了アニメーション ON
-var DEF_MASU_CNT_6 = 0; //!< マス縦横6
-var DEF_MASU_CNT_8 = 1; //!< マス縦横8
-var DEF_MASU_CNT_10 = 2; //!< マス縦横10
-var DEF_MASU_CNT_12 = 3; //!< マス縦横12
-var DEF_MASU_CNT_14 = 4; //!< マス縦横14
-var DEF_MASU_CNT_16 = 5; //!< マス縦横16
-var DEF_MASU_CNT_6_VAL = 6; //!< マス縦横6
-var DEF_MASU_CNT_8_VAL = 8; //!< マス縦横8
-var DEF_MASU_CNT_10_VAL = 10; //!< マス縦横10
-var DEF_MASU_CNT_12_VAL = 12; //!< マス縦横12
-var DEF_MASU_CNT_14_VAL = 14; //!< マス縦横14
-var DEF_MASU_CNT_16_VAL = 16; //!< マス縦横16
-var DEF_MASU_CNT_MAX_VAL = DEF_MASU_CNT_16_VAL; //!< マス縦横最大
+/// <reference path="ReversiSetting.ts" />
 var LC_MSG_DRAW = 0; //!< マス描画
 var LC_MSG_ERASE = 1; //!< マス消去
 var LC_MSG_DRAW_INFO = 2; //!< マス情報描画
@@ -65,7 +33,7 @@ var LC_MSG_MSG_DLG = 13; //!< メッセージダイアログ
 var LC_MSG_DRAW_ALL_RESET = 14; //!< 全マスビットマップインスタンスクリア
 ////////////////////////////////////////////////////////////////////////////////
 /**	@class		ReversiPlay
- *	@brief		メインアクティビティクラス
+ *	@brief		リバーシプレイクラス
  */
 ////////////////////////////////////////////////////////////////////////////////
 var ReversiPlay = (function () {
@@ -79,20 +47,8 @@ var ReversiPlay = (function () {
     ////////////////////////////////////////////////////////////////////////////////
     function ReversiPlay() {
         this.mCurColor = 0; //!< 現在の色
-        this.mMode = DEF_MODE_ONE; //!< 現在のモード
-        this.mType = DEF_TYPE_HARD; //!< 現在のタイプ
-        this.mPlayer = REVERSI_STS_BLACK; //!< プレイヤーの色
-        this.mAssist = DEF_ASSIST_ON; //!< アシスト
-        this.mGameSpd = DEF_GAME_SPD_MID; //!< ゲームスピード
-        this.mEndAnim = DEF_END_ANIM_ON; //!< ゲーム終了アニメーション
-        this.mMasuCntMenu = DEF_MASU_CNT_8; //!< マスの数
-        this.mMasuCnt = DEF_MASU_CNT_8_VAL; //!< マスの数
         this.mPassEnaB = 0; //!< 黒のパス有効フラグ
         this.mPassEnaW = 0; //!< 白のパス有効フラグ
-        this.mPlayCpuInterVal = DEF_GAME_SPD_MID_VAL2; //!< CPU対戦時のインターバル(msec)
-        this.mPlayDrawInterVal = DEF_GAME_SPD_MID_VAL; //!< 描画のインターバル(msec)
-        this.mEndDrawInterVal = 100; //!< 描画のインターバル(msec)
-        this.mEndInterVal = 500; //!< 描画のインターバル(msec)
         this.mGameEndSts = 0; //!< ゲーム終了ステータス
         this.mPlayLock = 0; //!< プレイロック
         this.viewMsgDlgFunc = null; //!< メッセージコールバック
@@ -100,6 +56,7 @@ var ReversiPlay = (function () {
         this.curColMsgFunc = null; //!< 現在の色メッセージコールバック
         this.curStsMsgFunc = null; //!< 現在のステータスメッセージコールバック
         this.mReversi = new Reversi(DEF_MASU_CNT_MAX_VAL, DEF_MASU_CNT_MAX_VAL);
+        this.mSetting = new ReversiSetting();
         this.mCpu = new Array();
         this.mEdge = new Array();
         for (var i = 0; i < (DEF_MASU_CNT_MAX_VAL * DEF_MASU_CNT_MAX_VAL); i++) {
@@ -126,9 +83,9 @@ var ReversiPlay = (function () {
         var pass = 0;
         if (this.mReversi.getColorEna(this.mCurColor) == 0) {
             if (this.mReversi.setMasuSts(this.mCurColor, y, x) == 0) {
-                if (this.mType == DEF_TYPE_HARD)
+                if (this.mSetting.mType == DEF_TYPE_HARD)
                     this.mReversi.AnalysisReversi(this.mPassEnaB, this.mPassEnaW);
-                if (this.mAssist == DEF_ASSIST_ON) {
+                if (this.mSetting.mAssist == DEF_ASSIST_ON) {
                     // *** メッセージ送信 *** //
                     this.execMessage(LC_MSG_ERASE_INFO_ALL, null);
                 }
@@ -140,12 +97,12 @@ var ReversiPlay = (function () {
                     else
                         tmpCol = REVERSI_STS_BLACK;
                     if (this.mReversi.getColorEna(tmpCol) == 0) {
-                        if (this.mMode == DEF_MODE_ONE) {
+                        if (this.mSetting.mMode == DEF_MODE_ONE) {
                             cpuEna = 1;
                         }
                         else {
                             this.mCurColor = tmpCol;
-                            this.drawUpdate(this.mAssist); // 次のプレイヤーコマ描画
+                            this.drawUpdate(this.mSetting.mAssist); // 次のプレイヤーコマ描画
                         }
                     }
                     else {
@@ -172,7 +129,7 @@ var ReversiPlay = (function () {
                 else
                     tmpCol = REVERSI_STS_BLACK;
                 if (this.mReversi.getColorEna(tmpCol) == 0) {
-                    if (this.mMode == DEF_MODE_ONE) {
+                    if (this.mSetting.mMode == DEF_MODE_ONE) {
                         update = 1;
                         cpuEna = 1;
                     }
@@ -192,8 +149,8 @@ var ReversiPlay = (function () {
             }
         }
         if (pass == 1) {
-            if (this.mMode == DEF_MODE_ONE) {
-                if (this.mAssist == DEF_ASSIST_ON) {
+            if (this.mSetting.mMode == DEF_MODE_ONE) {
+                if (this.mSetting.mAssist == DEF_ASSIST_ON) {
                     // *** メッセージ送信 *** //
                     this.execMessage(LC_MSG_DRAW_INFO_ALL, null);
                 }
@@ -202,7 +159,7 @@ var ReversiPlay = (function () {
         if (update == 1) {
             var waitTime = 0;
             if (cpuEna == 1) {
-                waitTime = this.mPlayCpuInterVal;
+                waitTime = this.mSetting.mPlayCpuInterVal;
             }
             var _this = this;
             setTimeout(function (cpuEna, tmpCol) {
@@ -261,7 +218,7 @@ var ReversiPlay = (function () {
                 blk = _this.mReversi.getBetCnt(REVERSI_STS_BLACK);
                 whi = _this.mReversi.getBetCnt(REVERSI_STS_WHITE);
                 tmpMsg1 = '黒 = ' + String(blk) + ' 白 = ' + String(whi);
-                if (_this.mMode == DEF_MODE_ONE) {
+                if (_this.mSetting.mMode == DEF_MODE_ONE) {
                     if (whi == blk)
                         tmpMsg2 = '引き分けです。';
                     else if (whi < blk) {
@@ -287,7 +244,7 @@ var ReversiPlay = (function () {
                 }
                 msgStr = tmpMsg1 + tmpMsg2;
                 _this.viewMsgDlg('ゲーム終了', msgStr);
-                if (_this.mEndAnim == DEF_END_ANIM_ON) {
+                if (_this.mSetting.mEndAnim == DEF_END_ANIM_ON) {
                     // *** メッセージ送信 *** //
                     _this.execMessage(LC_MSG_CUR_COL, null);
                     // *** メッセージ送信 *** //
@@ -308,7 +265,7 @@ var ReversiPlay = (function () {
     ////////////////////////////////////////////////////////////////////////////////
     ReversiPlay.prototype.reversiPlayPass = function (color) {
         // *** パスメッセージ *** //
-        if (this.mMode == DEF_MODE_ONE) {
+        if (this.mSetting.mMode == DEF_MODE_ONE) {
             if (color == this.mCurColor)
                 this.viewMsgDlg('', 'あなたはパスです。');
             else
@@ -344,7 +301,7 @@ var ReversiPlay = (function () {
                 if (pInfo != null) {
                     setY = pInfo.y;
                     setX = pInfo.x;
-                    if (this.mType != DEF_TYPE_EASY) {
+                    if (this.mSetting.mType != DEF_TYPE_EASY) {
                         var cpuflg0, cpuflg1, cpuflg2, cpuflg3, mem, mem2, mem3, mem4, rcnt1, rcnt2, kadocnt, loop, pcnt, passCnt, othColor, othBet, ownBet, endZone;
                         cpuflg0 = 0;
                         cpuflg1 = 0;
@@ -357,7 +314,7 @@ var ReversiPlay = (function () {
                         rcnt1 = 0;
                         rcnt2 = 0;
                         kadocnt = 0;
-                        loop = this.mMasuCnt * this.mMasuCnt;
+                        loop = this.mSetting.mMasuCnt * this.mSetting.mMasuCnt;
                         pcnt = 0;
                         passCnt = 0;
                         if (color == REVERSI_STS_BLACK)
@@ -375,8 +332,8 @@ var ReversiPlay = (function () {
                             this.mEdge[i].x = 0;
                             this.mEdge[i].y = 0;
                         }
-                        for (var i = 0; i < this.mMasuCnt; i++) {
-                            for (var j = 0; j < this.mMasuCnt; j++) {
+                        for (var i = 0; i < this.mSetting.mMasuCnt; i++) {
+                            for (var j = 0; j < this.mSetting.mMasuCnt; j++) {
                                 if (this.mReversi.getMasuStsEna(color, i, j) != 0) {
                                     // *** 角の一つ手前なら別のとこに格納 *** //
                                     if (this.mReversi.getEdgeSideOne(i, j) == 0) {
@@ -389,7 +346,7 @@ var ReversiPlay = (function () {
                                         this.mCpu[rcnt1].y = i;
                                         rcnt1++;
                                     }
-                                    if (this.mType == DEF_TYPE_NOR) {
+                                    if (this.mSetting.mType == DEF_TYPE_NOR) {
                                         // *** 角に置けるなら優先的にとらせるため場所を記憶させる *** //
                                         if (this.mReversi.getEdgeSideZero(i, j) == 0) {
                                             cpuflg1 = 1;
@@ -435,7 +392,7 @@ var ReversiPlay = (function () {
                             var tmpAnz;
                             if (rcnt1 != 0) {
                                 for (var i = 0; i < rcnt1; i++) {
-                                    if (this.mType == DEF_TYPE_HARD) {
+                                    if (this.mSetting.mType == DEF_TYPE_HARD) {
                                         tmpAnz = this.mReversi.getPointAnz(color, this.mCpu[i].y, this.mCpu[i].x);
                                         if (tmpAnz != null) {
                                             if (badPoint == -1) {
@@ -492,7 +449,7 @@ var ReversiPlay = (function () {
                             }
                             else if (kadocnt != 0) {
                                 for (var i = 0; i < kadocnt; i++) {
-                                    if (this.mType == DEF_TYPE_HARD) {
+                                    if (this.mSetting.mType == DEF_TYPE_HARD) {
                                         tmpAnz = this.mReversi.getPointAnz(color, this.mEdge[i].y, this.mEdge[i].x);
                                         if (tmpAnz != null) {
                                             if (badPoint == -1) {
@@ -570,7 +527,7 @@ var ReversiPlay = (function () {
                         }
                     }
                     if (this.mReversi.setMasuSts(color, setY, setX) == 0) {
-                        if (this.mType == DEF_TYPE_HARD)
+                        if (this.mSetting.mType == DEF_TYPE_HARD)
                             this.mReversi.AnalysisReversi(this.mPassEnaB, this.mPassEnaW);
                         this.sendDrawMsg(setY, setX); // 描画
                         update = 1;
@@ -583,7 +540,7 @@ var ReversiPlay = (function () {
         }
         if (update == 1) {
             this.drawUpdate(DEF_ASSIST_OFF);
-            if (this.mAssist == DEF_ASSIST_ON) {
+            if (this.mSetting.mAssist == DEF_ASSIST_ON) {
                 // *** メッセージ送信 *** //
                 this.execMessage(LC_MSG_DRAW_INFO_ALL, null);
             }
@@ -601,21 +558,21 @@ var ReversiPlay = (function () {
     ////////////////////////////////////////////////////////////////////////////////
     ReversiPlay.prototype.drawUpdate = function (assist) {
         if (assist == DEF_ASSIST_ON) {
-            for (var i = 0; i < this.mMasuCnt; i++) {
-                for (var j = 0; j < this.mMasuCnt; j++) {
+            for (var i = 0; i < this.mSetting.mMasuCnt; i++) {
+                for (var j = 0; j < this.mSetting.mMasuCnt; j++) {
                     this.sendDrawInfoMsg(i, j);
                 }
             }
         }
-        var waitTime = this.mPlayDrawInterVal;
+        var waitTime = this.mSetting.mPlayDrawInterVal;
         var _this = this;
-        for (var i = 0; i < this.mMasuCnt; i++) {
-            for (var j = 0; j < this.mMasuCnt; j++) {
+        for (var i = 0; i < this.mSetting.mMasuCnt; i++) {
+            for (var j = 0; j < this.mSetting.mMasuCnt; j++) {
                 if (this.mReversi.getMasuSts(i, j) != this.mReversi.getMasuStsOld(i, j)) {
                     setTimeout(function (i, j) {
                         _this.sendDrawMsg(i, j);
                     }, waitTime, i, j);
-                    waitTime += this.mPlayDrawInterVal;
+                    waitTime += this.mSetting.mPlayDrawInterVal;
                 }
             }
         }
@@ -660,37 +617,37 @@ var ReversiPlay = (function () {
     ReversiPlay.prototype.reset = function () {
         this.mPassEnaB = 0;
         this.mPassEnaW = 0;
-        if (this.mGameSpd == DEF_GAME_SPD_FAST) {
-            this.mPlayDrawInterVal = DEF_GAME_SPD_FAST_VAL; // 描画のインターバル(msec)
-            this.mPlayCpuInterVal = DEF_GAME_SPD_FAST_VAL2; // CPU対戦時のインターバル(msec)
+        if (this.mSetting.mGameSpd == DEF_GAME_SPD_FAST) {
+            this.mSetting.mPlayDrawInterVal = DEF_GAME_SPD_FAST_VAL; // 描画のインターバル(msec)
+            this.mSetting.mPlayCpuInterVal = DEF_GAME_SPD_FAST_VAL2; // CPU対戦時のインターバル(msec)
         }
-        else if (this.mGameSpd == DEF_GAME_SPD_MID) {
-            this.mPlayDrawInterVal = DEF_GAME_SPD_MID_VAL; // 描画のインターバル(msec)
-            this.mPlayCpuInterVal = DEF_GAME_SPD_MID_VAL2; // CPU対戦時のインターバル(msec)
+        else if (this.mSetting.mGameSpd == DEF_GAME_SPD_MID) {
+            this.mSetting.mPlayDrawInterVal = DEF_GAME_SPD_MID_VAL; // 描画のインターバル(msec)
+            this.mSetting.mPlayCpuInterVal = DEF_GAME_SPD_MID_VAL2; // CPU対戦時のインターバル(msec)
         }
         else {
-            this.mPlayDrawInterVal = DEF_GAME_SPD_SLOW_VAL; // 描画のインターバル(msec)
-            this.mPlayCpuInterVal = DEF_GAME_SPD_SLOW_VAL2; // CPU対戦時のインターバル(msec)
+            this.mSetting.mPlayDrawInterVal = DEF_GAME_SPD_SLOW_VAL; // 描画のインターバル(msec)
+            this.mSetting.mPlayCpuInterVal = DEF_GAME_SPD_SLOW_VAL2; // CPU対戦時のインターバル(msec)
         }
-        this.mCurColor = this.mPlayer;
-        if (this.mMode == DEF_MODE_TWO)
+        this.mCurColor = this.mSetting.mPlayer;
+        if (this.mSetting.mMode == DEF_MODE_TWO)
             this.mCurColor = REVERSI_STS_BLACK;
-        this.mReversi.setMasuCnt(this.mMasuCnt); // マスの数設定
+        this.mReversi.setMasuCnt(this.mSetting.mMasuCnt); // マスの数設定
         this.mReversi.reset();
-        if (this.mMode == DEF_MODE_ONE) {
+        if (this.mSetting.mMode == DEF_MODE_ONE) {
             if (this.mCurColor == REVERSI_STS_WHITE) {
                 var pCnt = this.mReversi.getPointCnt(REVERSI_STS_BLACK);
                 var pInfo = this.mReversi.getPoint(REVERSI_STS_BLACK, Math.floor(Math.random() * pCnt));
                 if (pInfo != null) {
                     this.mReversi.setMasuSts(REVERSI_STS_BLACK, pInfo.y, pInfo.x);
-                    if (this.mType == DEF_TYPE_HARD)
+                    if (this.mSetting.mType == DEF_TYPE_HARD)
                         this.mReversi.AnalysisReversi(this.mPassEnaB, this.mPassEnaW);
                 }
             }
         }
         this.mPlayLock = 1;
         this.mGameEndSts = 0;
-        this.drawUpdateForcibly(this.mAssist);
+        this.drawUpdateForcibly(this.mSetting.mAssist);
         // *** 終了通知 *** //
         // *** メッセージ送信 *** //
         this.execMessage(LC_MSG_DRAW_END, null);
@@ -706,7 +663,7 @@ var ReversiPlay = (function () {
     ReversiPlay.prototype.gameEndAnimExec = function () {
         var bCnt, wCnt;
         var ret = 0;
-        if (this.mEndAnim == DEF_END_ANIM_ON) {
+        if (this.mSetting.mEndAnim == DEF_END_ANIM_ON) {
             bCnt = this.mReversi.getBetCnt(REVERSI_STS_BLACK);
             wCnt = this.mReversi.getBetCnt(REVERSI_STS_WHITE);
             // *** 色、コマ数表示消去 *** //
@@ -717,8 +674,8 @@ var ReversiPlay = (function () {
             var _this = this;
             setTimeout(function (bCnt, wCnt) {
                 // *** マス消去 *** //
-                for (var i = 0; i < _this.mMasuCnt; i++) {
-                    for (var j = 0; j < _this.mMasuCnt; j++) {
+                for (var i = 0; i < _this.mSetting.mMasuCnt; i++) {
+                    for (var j = 0; j < _this.mSetting.mMasuCnt; j++) {
                         _this.mReversi.setMasuStsForcibly(REVERSI_STS_NONE, i, j);
                     }
                 }
@@ -730,9 +687,9 @@ var ReversiPlay = (function () {
                 wCnt2 = 0;
                 bEnd = 0;
                 wEnd = 0;
-                var waitTime = _this.mEndDrawInterVal;
-                for (var i = 0; i < _this.mMasuCnt; i++) {
-                    for (var j = 0; j < _this.mMasuCnt; j++) {
+                var waitTime = _this.mSetting.mEndDrawInterVal;
+                for (var i = 0; i < _this.mSetting.mMasuCnt; i++) {
+                    for (var j = 0; j < _this.mSetting.mMasuCnt; j++) {
                         if (bCnt2 < bCnt) {
                             bCnt2++;
                             setTimeout(function (i, j) {
@@ -746,8 +703,8 @@ var ReversiPlay = (function () {
                         if (wCnt2 < wCnt) {
                             wCnt2++;
                             setTimeout(function (i, j) {
-                                _this.mReversi.setMasuStsForcibly(REVERSI_STS_WHITE, (_this.mMasuCnt - 1) - i, (_this.mMasuCnt - 1) - j);
-                                _this.sendDrawMsg((_this.mMasuCnt - 1) - i, (_this.mMasuCnt - 1) - j);
+                                _this.mReversi.setMasuStsForcibly(REVERSI_STS_WHITE, (_this.mSetting.mMasuCnt - 1) - i, (_this.mSetting.mMasuCnt - 1) - j);
+                                _this.sendDrawMsg((_this.mSetting.mMasuCnt - 1) - i, (_this.mSetting.mMasuCnt - 1) - j);
                             }, waitTime, i, j);
                         }
                         else {
@@ -757,12 +714,12 @@ var ReversiPlay = (function () {
                             break;
                         }
                         else {
-                            waitTime += _this.mEndDrawInterVal;
+                            waitTime += _this.mSetting.mEndDrawInterVal;
                         }
                     }
                 }
-            }, this.mEndInterVal, bCnt, wCnt);
-            ret = this.mEndInterVal + this.mEndDrawInterVal * (this.mMasuCnt * this.mMasuCnt);
+            }, this.mSetting.mEndInterVal, bCnt, wCnt);
+            ret = this.mSetting.mEndInterVal + this.mSetting.mEndDrawInterVal * (this.mSetting.mMasuCnt * this.mSetting.mMasuCnt);
         }
         return ret;
     };
@@ -952,8 +909,8 @@ var ReversiPlay = (function () {
         }
         else if (what == LC_MSG_DRAW_ALL) {
             // *** 全マス描画 *** //
-            for (var i = 0; i < this.mMasuCnt; i++) {
-                for (var j = 0; j < this.mMasuCnt; j++) {
+            for (var i = 0; i < this.mSetting.mMasuCnt; i++) {
+                for (var j = 0; j < this.mSetting.mMasuCnt; j++) {
                     dMode = this.mReversi.getMasuSts(i, j);
                     dBack = this.mReversi.getMasuStsEna(this.mCurColor, i, j);
                     dCnt = this.mReversi.getMasuStsCnt(this.mCurColor, i, j);
@@ -963,16 +920,16 @@ var ReversiPlay = (function () {
         }
         else if (what == LC_MSG_ERASE_ALL) {
             // *** 全マス消去 *** //
-            for (var i = 0; i < this.mMasuCnt; i++) {
-                for (var j = 0; j < this.mMasuCnt; j++) {
+            for (var i = 0; i < this.mSetting.mMasuCnt; i++) {
+                for (var j = 0; j < this.mSetting.mMasuCnt; j++) {
                     this.drawSingle(i, j, 0, 0, String(0));
                 }
             }
         }
         else if (what == LC_MSG_DRAW_INFO_ALL) {
             // *** 全マス情報描画 *** //
-            for (var i = 0; i < this.mMasuCnt; i++) {
-                for (var j = 0; j < this.mMasuCnt; j++) {
+            for (var i = 0; i < this.mSetting.mMasuCnt; i++) {
+                for (var j = 0; j < this.mSetting.mMasuCnt; j++) {
                     dMode = this.mReversi.getMasuSts(i, j);
                     dBack = this.mReversi.getMasuStsEna(this.mCurColor, i, j);
                     dCnt = this.mReversi.getMasuStsCnt(this.mCurColor, i, j);
@@ -982,8 +939,8 @@ var ReversiPlay = (function () {
         }
         else if (what == LC_MSG_ERASE_INFO_ALL) {
             // *** 全マス情報消去 *** //
-            for (var i = 0; i < this.mMasuCnt; i++) {
-                for (var j = 0; j < this.mMasuCnt; j++) {
+            for (var i = 0; i < this.mSetting.mMasuCnt; i++) {
+                for (var j = 0; j < this.mSetting.mMasuCnt; j++) {
                     dMode = this.mReversi.getMasuSts(i, j);
                     this.drawSingle(i, j, dMode, 0, String(0));
                 }
@@ -994,7 +951,7 @@ var ReversiPlay = (function () {
         }
         else if (what == LC_MSG_CUR_COL) {
             var tmpStr = '';
-            if (this.mMode == DEF_MODE_ONE) {
+            if (this.mSetting.mMode == DEF_MODE_ONE) {
                 if (this.mCurColor == REVERSI_STS_BLACK)
                     tmpStr = 'あなたは黒です ';
                 else
@@ -1022,6 +979,29 @@ var ReversiPlay = (function () {
         }
         else if (what == LC_MSG_DRAW_ALL_RESET) {
         }
+    };
+    ////////////////////////////////////////////////////////////////////////////////
+    /**	@brief			セッター
+     *	@fn				public setSetting(mSetting: ReversiSetting): void
+     *	@param[in]		mSetting: ReversiSetting
+     *	@return			ありません
+     *	@author			Yuta Yoshinaga
+     *	@date			2017.06.01
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    ReversiPlay.prototype.setSetting = function (mSetting) {
+        this.mSetting = mSetting;
+    };
+    ////////////////////////////////////////////////////////////////////////////////
+    /**	@brief			ゲッター
+     *	@fn				public getetSetting(): ReversiSetting
+     *	@return			リバーシ設定クラス
+     *	@author			Yuta Yoshinaga
+     *	@date			2017.06.01
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    ReversiPlay.prototype.getetSetting = function () {
+        return this.mSetting;
     };
     return ReversiPlay;
 }());

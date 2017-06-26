@@ -1,7 +1,14 @@
 var reversiPlay = new ReversiPlay();
+var reversiSetting = new ReversiSetting();
+var storage = localStorage;
 $(document).ready(function () {
+    //storage.clear();
+    var lReversiSetting = storage.getItem('appSetting');
+    if(lReversiSetting != null) reversiSetting = JSON.parse(lReversiSetting);
+    else                        storage.setItem('appSetting',JSON.stringify(reversiSetting));
     // *** マスを用意 *** //
     appInit();
+    reversiPlay.setSetting(reversiSetting);
     reversiPlay.reset();
     // *** クリックイベント *** //
     $('.reversi_field .square-wrapper').on('click', function () {
