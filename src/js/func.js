@@ -6,33 +6,84 @@ $(document).ready(function () {
     var lReversiSetting = storage.getItem('appSetting');
     if(lReversiSetting != null) reversiSetting = JSON.parse(lReversiSetting);
     else                        storage.setItem('appSetting',JSON.stringify(reversiSetting));
+    // *** 設定値をメニューに反映 *** //
+    var ele;
+    ele = $('#mMode input[value="' + Number(reversiSetting.mMode) + '"]').parent().addClass('active');
+    ele = $('#mType input[value="' + Number(reversiSetting.mType) + '"]').parent().addClass('active');
+    ele = $('#mPlayer input[value="' + Number(reversiSetting.mPlayer) + '"]').parent().addClass('active');
+    ele = $('#mAssist input[value="' + Number(reversiSetting.mAssist) + '"]').parent().addClass('active');
+    ele = $('#mGameSpd input[value="' + Number(reversiSetting.mGameSpd) + '"]').parent().addClass('active');
+    ele = $('#mEndAnim input[value="' + Number(reversiSetting.mEndAnim) + '"]').parent().addClass('active');
+    ele = $('#mMasuCntMenu input[value="' + Number(reversiSetting.mMasuCntMenu) + '"]').parent().addClass('active');
     // *** マスを用意 *** //
     appInit();
     reversiPlay.setSetting(reversiSetting);
     reversiPlay.reset();
     // *** クリックイベント *** //
-    $('.reversi_field .square-wrapper').on('click', function () {
+    $('.reversi_field').on('click', '.square-wrapper', function () {
         var curX = $(this).data('x');
         var curY = $(this).data('y');
         console.log('x = ' + curX + ',y = ' + curY);
         reversiPlay.reversiPlay(curY,curX);
     });
-    $('.reversi_field .reset').on('click', function () {
+    $('.reversi_field').on('click', '.reset', function () {
         reversiPlay.reset();
     });
-    $('.reversi_field .setting').on('click', function () {
+    $('.reversi_field').on('click', '.setting', function () {
     });
+    $('#appMenuModal').on('click', '.btn-primary', function () {
+        reversiSetting.mMode = $("#mMode .active input").val();
+        reversiSetting.mType = $("#mType .active input").val();
+        reversiSetting.mPlayer = $("#mPlayer .active input").val();
+        reversiSetting.mAssist = $("#mAssist .active input").val();
+        reversiSetting.mGameSpd = $("#mGameSpd .active input").val();
+        if(reversiSetting.mGameSpd == DEF_GAME_SPD_FAST){
+            reversiSetting.mPlayCpuInterVal = DEF_GAME_SPD_FAST_VAL2;
+            reversiSetting.mPlayDrawInterVal = DEF_GAME_SPD_FAST_VAL;
+        }else if(reversiSetting.mGameSpd == DEF_GAME_SPD_MID){
+            reversiSetting.mPlayCpuInterVal = DEF_GAME_SPD_MID_VAL2;
+            reversiSetting.mPlayDrawInterVal = DEF_GAME_SPD_MID_VAL;
+        }else if(reversiSetting.mGameSpd == DEF_GAME_SPD_SLOW){
+            reversiSetting.mPlayCpuInterVal = DEF_GAME_SPD_SLOW_VAL2;
+            reversiSetting.mPlayDrawInterVal = DEF_GAME_SPD_SLOW_VAL;
+        }
+        reversiSetting.mEndAnim = $("#mEndAnim .active input").val();
+        reversiSetting.mMasuCntMenu = $("#mMasuCntMenu .active input").val();
+        if(reversiSetting.mMasuCntMenu == DEF_MASU_CNT_6){
+            reversiSetting.mMasuCnt = DEF_MASU_CNT_6_VAL;
+        }else if(reversiSetting.mMasuCntMenu == DEF_MASU_CNT_8){
+            reversiSetting.mMasuCnt = DEF_MASU_CNT_8_VAL;
+        }else if(reversiSetting.mMasuCntMenu == DEF_MASU_CNT_10){
+            reversiSetting.mMasuCnt = DEF_MASU_CNT_10_VAL;
+        }else if(reversiSetting.mMasuCntMenu == DEF_MASU_CNT_12){
+            reversiSetting.mMasuCnt = DEF_MASU_CNT_12_VAL;
+        }else if(reversiSetting.mMasuCntMenu == DEF_MASU_CNT_14){
+            reversiSetting.mMasuCnt = DEF_MASU_CNT_14_VAL;
+        }else if(reversiSetting.mMasuCntMenu == DEF_MASU_CNT_16){
+            reversiSetting.mMasuCnt = DEF_MASU_CNT_16_VAL;
+        }
+        storage.setItem('appSetting',JSON.stringify(reversiSetting));       
+        appInit();
+        reversiPlay.setSetting(reversiSetting);
+        reversiPlay.reset();
+        console.log(reversiSetting);      
+    });
+    // *** ダイアログクローズイベント *** //
+    $('#appMenuModal').on('hidden.bs.modal', function () {
+        console.log("appMenuModal close");
+	});
 });
 
 $(window).load(function () {
 });
 
 function appInit() {
-    for (var i = 0; i < 8; i++) {
+    $('.reversi_field').empty();
+    for (var i = 0; i < reversiSetting.mMasuCnt; i++) {
         var row = $('<div class="row"><\/div>');
         row.addClass('pos_row' + String(i));
         $('.reversi_field').append(row);
-        for (var j = 0; j < 8; j++) {
+        for (var j = 0; j < reversiSetting.mMasuCnt; j++) {
             var ele = $('<div class="square-wrapper"><div class="spacer"><div class="content"><\/div><\/div><\/div>');
             ele.addClass('pos_x' + String(j));
             ele.addClass('pos_y' + String(i));

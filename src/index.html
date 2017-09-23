@@ -26,79 +26,79 @@
           <h4 class="modal-title" id="myModalLabel">設定</h4>
         </div>
         <div class="modal-body">
-          <div class="appMenuGrp">
+          <div class="appMenuGrp" id="mMode">
             <div>対戦人数</div>
             <hr>
             <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info active"><input type="radio" autocomplete="off" checked>一人</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off">二人</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="0">一人</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">二人</label>
             </div>
             <hr>
           </div>
-          <div class="appMenuGrp">
+          <div class="appMenuGrp" id="mType">
             <div>CPU強さ</div>
             <hr>
             <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info active"><input type="radio" autocomplete="off" checked>弱い</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off">普通</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off">強い</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="0">弱い</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">普通</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="2">強い</label>
             </div>
             <hr>
           </div>
-          <div class="appMenuGrp">
+          <div class="appMenuGrp" id="mPlayer">
             <div>色</div>
             <hr>
             <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info active"><input type="radio" autocomplete="off" checked>黒</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off">白</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">黒</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="2">白</label>
             </div>
             <hr>
           </div>
-          <div class="appMenuGrp">
+          <div class="appMenuGrp" id="mAssist">
             <div>アシストモード</div>
             <hr>
             <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info active"><input type="radio" autocomplete="off" checked>OFF</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off">ON</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="0">OFF</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">ON</label>
             </div>
             <hr>
           </div>
-          <div class="appMenuGrp">
+          <div class="appMenuGrp" id="mGameSpd">
             <div>ゲームスピード</div>
             <hr>
             <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info active"><input type="radio" autocomplete="off" checked>遅い</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off">普通</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off">速い</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="0">遅い</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">普通</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="2">速い</label>
             </div>
             <hr>
           </div>
-          <div class="appMenuGrp">
+          <div class="appMenuGrp" id="mEndAnim">
             <div>ゲーム終了アニメ</div>
             <hr>
             <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info active"><input type="radio" autocomplete="off" checked>OFF</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off">ON</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="0">OFF</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">ON</label>
             </div>
             <hr>
           </div>
-          <div class="appMenuGrp">
+          <div class="appMenuGrp" id="mMasuCntMenu">
             <div>縦横マス数</div>
             <hr>
             <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info active"><input type="radio" autocomplete="off" checked>6</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off">8</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off">10</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off">12</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off">14</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off">16</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="0">6</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">8</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="2">10</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="3">12</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="4">14</label>
+              <label class="btn btn-info"><input type="radio" autocomplete="off" value="5">16</label>
             </div>
             <hr>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-          <button type="button" class="btn btn-primary">適用</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">適用</button>
         </div>
       </div>
     </div>
