@@ -11,18 +11,22 @@ let mainWindow;
 
 function createWindow() {
   // メインウィンドウを作成します
-  mainWindow = new BrowserWindow({ width: 600, height: 600 });
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    icon: path.join(__dirname, 'images/icon-sm.png'),
+  });
 
   // メインウィンドウに表示するURLを指定します
   // （今回はmain.jsと同じディレクトリのindex.html）
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
-    slashes: true
+    slashes: true,
   }));
 
   // デベロッパーツールの起動
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   // メインウィンドウが閉じられたときの処理
   mainWindow.on('closed', function () {

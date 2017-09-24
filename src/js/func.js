@@ -15,6 +15,11 @@ $(document).ready(function () {
     ele = $('#mGameSpd input[value="' + Number(reversiSetting.mGameSpd) + '"]').parent().addClass('active');
     ele = $('#mEndAnim input[value="' + Number(reversiSetting.mEndAnim) + '"]').parent().addClass('active');
     ele = $('#mMasuCntMenu input[value="' + Number(reversiSetting.mMasuCntMenu) + '"]').parent().addClass('active');
+    ele = $('#mTheme input[value="' + reversiSetting.mTheme + '"]').parent().addClass('active');
+    var oldTheme = reversiSetting.mTheme;
+    $('head link[href=".\/css\/theme\/' + oldTheme + '\/bootstrap.min.css"]').remove();
+    var addEle = '<link href=".\/css\/theme\/' + reversiSetting.mTheme + '\/bootstrap.min.css" rel="stylesheet" media="screen">';
+    $('head').append(addEle);
     // *** マスを用意 *** //
     appInit();
     reversiPlay.setSetting(reversiSetting);
@@ -28,8 +33,6 @@ $(document).ready(function () {
     });
     $('.reversi_field').on('click', '.reset', function () {
         reversiPlay.reset();
-    });
-    $('.reversi_field').on('click', '.setting', function () {
     });
     $('#appMenuModal').on('click', '.btn-primary', function () {
         reversiSetting.mMode = $("#mMode .active input").val();
@@ -62,6 +65,13 @@ $(document).ready(function () {
         }else if(reversiSetting.mMasuCntMenu == DEF_MASU_CNT_16){
             reversiSetting.mMasuCnt = DEF_MASU_CNT_16_VAL;
         }
+
+        var oldTheme = reversiSetting.mTheme;
+        reversiSetting.mTheme = $("#mTheme .active input").val();
+        $('head link[href=".\/css\/theme\/' + oldTheme + '\/bootstrap.min.css"]').remove();
+        var addEle = '<link href=".\/css\/theme\/' + reversiSetting.mTheme + '\/bootstrap.min.css" rel="stylesheet" media="screen">';
+        $('head').append(addEle);
+        
         storage.setItem('appSetting',JSON.stringify(reversiSetting));       
         appInit();
         reversiPlay.setSetting(reversiSetting);
@@ -72,10 +82,49 @@ $(document).ready(function () {
     $('#appMenuModal').on('hidden.bs.modal', function () {
         console.log("appMenuModal close");
 	});
+
+    var rs_timer = false;
+    $(window).resize(function() {
+        if (rs_timer !== false) {
+            clearTimeout(rs_timer);
+        }
+        rs_timer = setTimeout(function() {
+            // *** 画面リサイズ処理 *** //
+            set_masu_size_squer();
+        }, 200);
+    });
 });
 
 $(window).load(function () {
+    set_masu_size_squer();
 });
+
+function set_masu_size_squer() {
+    var devHeight = $(window).height();
+    var devWidth = $(window).width();
+    var devOffset = 100;
+    var masuSize;
+    var viewSize;
+    console.log('height : ' + devHeight + 'px');
+    console.log('width : ' + devWidth + 'px');
+    if(devHeight < devWidth){
+        // *** 縦幅の方が狭い *** //
+        viewSize = (devHeight - devOffset);
+    }else{
+        // *** 横幅の方が狭い *** //
+        viewSize = (devWidth - devOffset);
+    }
+    masuSize = (viewSize / reversiSetting.mMasuCnt);
+    $('.reversi_field').width(viewSize + 'px');
+    $('.reversi_field').height(viewSize + 'px');
+    $('.reversi_field .square-wrapper').each(function(){
+        $(this).css('width', masuSize + 'px');
+        $(this).css('height', masuSize + 'px');
+    });
+    $('.reversi_field .square-wrapper .content').each(function(){
+        $(this).css('line-height', $(this).height() + 'px');
+    });
+}
 
 function appInit() {
     $('.reversi_field').empty();
@@ -98,11 +147,12 @@ function appInit() {
     $('.reversi_field').append('<div class="cur_sts_msg"><\/div>');
 	// *** ボタン配置 *** //
     $('.reversi_field').append('<div class="col-xs-3">&nbsp;<\/div>');
-    $('.reversi_field').append('<div class="col-xs-3"><button type="button" class="btn btn-primary btn-lg reset">リセット<\/button><\/div>');
-    $('.reversi_field').append('<div class="col-xs-3"><button type="button" class="btn btn-info btn-lg setting" data-toggle="modal" data-target="#appMenuModal">設定<\/button><\/div>');
+    $('.reversi_field').append('<div class="col-xs-3"><button type="button" class="btn btn-primary btn-sm reset">リセット<\/button><\/div>');
+    $('.reversi_field').append('<div class="col-xs-3"><button type="button" class="btn btn-info btn-sm setting" data-toggle="modal" data-target="#appMenuModal">設定<\/button><\/div>');
     $('.reversi_field').append('<div class="col-xs-3">&nbsp;<\/div>');
     $('.reversi_field').append('<div class="clearfix"><\/div>');
     drawAll();
+    set_masu_size_squer();   
 }
 
 function drawAll() {

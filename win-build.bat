@@ -1,1 +1,3 @@
-electron-packager src Reversi --platform=win32 --arch=x64 --overwrite --electron-version=1.4.15
+node win-build.js
+gulp create_windows_installer
+pause

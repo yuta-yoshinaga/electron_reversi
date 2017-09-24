@@ -2,120 +2,178 @@
 <html>
 
 <head>
-  <meta charset="UTF-8">
-  <title>Reversi</title>
-  <link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
-  <link href="./css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
-  <link href="./css/style.css" rel="stylesheet" media="screen">
+    <meta charset="UTF-8">
+    <title>Reversi</title>
+    <link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="./css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
+    <link href="./css/style.css" rel="stylesheet" media="screen">
 </head>
 
 <body>
-  <div>
-    <div class="col-xs-1">&nbsp;</div>
-    <div class="col-xs-10 reversi_field">
+    <div>
+        <div class="reversi_field">
+        </div>
+        <div class="clearfix"></div>
     </div>
-    <div class="col-xs-1">&nbsp;</div>
-    <div class="clearfix"></div>
-  </div>
-
-  <div class="modal fade" id="appMenuModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">設定</h4>
+    <div class="modal fade" id="appMenuModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">設定</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="appMenuGrp col-xs-4" id="mMode">
+                        <div>対戦人数</div>
+                        <hr>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="0">一人</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="1">二人</label>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="appMenuGrp col-xs-4" id="mType">
+                        <div>CPU強さ</div>
+                        <hr>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="0">弱い</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="1">普通</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="2">強い</label>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="appMenuGrp col-xs-4" id="mPlayer">
+                        <div>色</div>
+                        <hr>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="1">黒</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="2">白</label>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="appMenuGrp col-xs-4" id="mAssist">
+                        <div>アシストモード</div>
+                        <hr>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="0">OFF</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="1">ON</label>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="appMenuGrp col-xs-4" id="mGameSpd">
+                        <div>ゲームスピード</div>
+                        <hr>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="0">遅い</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="1">普通</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="2">速い</label>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="appMenuGrp col-xs-4" id="mEndAnim">
+                        <div>ゲーム終了アニメ</div>
+                        <hr>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="0">OFF</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="1">ON</label>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="appMenuGrp col-xs-6" id="mMasuCntMenu">
+                        <div>縦横マス数</div>
+                        <hr>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="0">6</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="1">8</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="2">10</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="3">12</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="4">14</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="5">16</label>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="appMenuGrp col-xs-6" id="mTheme">
+                        <div>テーマ</div>
+                        <hr>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Cerulean">Cerulean</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Cosmo">Cosmo</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Cyborg">Cyborg</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Darkly">Darkly</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Flatly">Flatly</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Journal">Journal</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Lumen">Lumen</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Paper">Paper</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Readable">Readable</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Sandstone">Sandstone</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Simplex">Simplex</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Slate">Slate</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Solar">Solar</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Spacelab">Spacelab</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Superhero">Superhero</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="United">United</label>
+                            <label class="btn btn-info btn-sm">
+                                <input type="radio" autocomplete="off" value="Yeti">Yeti</label>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">適用</button>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-          <div class="appMenuGrp" id="mMode">
-            <div>対戦人数</div>
-            <hr>
-            <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="0">一人</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">二人</label>
-            </div>
-            <hr>
-          </div>
-          <div class="appMenuGrp" id="mType">
-            <div>CPU強さ</div>
-            <hr>
-            <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="0">弱い</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">普通</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="2">強い</label>
-            </div>
-            <hr>
-          </div>
-          <div class="appMenuGrp" id="mPlayer">
-            <div>色</div>
-            <hr>
-            <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">黒</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="2">白</label>
-            </div>
-            <hr>
-          </div>
-          <div class="appMenuGrp" id="mAssist">
-            <div>アシストモード</div>
-            <hr>
-            <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="0">OFF</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">ON</label>
-            </div>
-            <hr>
-          </div>
-          <div class="appMenuGrp" id="mGameSpd">
-            <div>ゲームスピード</div>
-            <hr>
-            <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="0">遅い</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">普通</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="2">速い</label>
-            </div>
-            <hr>
-          </div>
-          <div class="appMenuGrp" id="mEndAnim">
-            <div>ゲーム終了アニメ</div>
-            <hr>
-            <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="0">OFF</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">ON</label>
-            </div>
-            <hr>
-          </div>
-          <div class="appMenuGrp" id="mMasuCntMenu">
-            <div>縦横マス数</div>
-            <hr>
-            <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="0">6</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="1">8</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="2">10</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="3">12</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="4">14</label>
-              <label class="btn btn-info"><input type="radio" autocomplete="off" value="5">16</label>
-            </div>
-            <hr>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal">適用</button>
-        </div>
-      </div>
     </div>
-  </div>
-
-  <script src="./js/jquery-1.12.4.min.js "></script>
-  <script>
+    <script src="./js/jquery-1.12.4.min.js "></script>
+    <script>
     window.jQuery = window.$ = require('./js/jquery-1.12.4.min.js');
-  </script>
-  <script src="./js/bootstrap.min.js "></script>
-  <script src="./js/ReversiPoint.js "></script>
-  <script src="./js/ReversiHistory.js "></script>
-  <script src="./js/ReversiAnz.js "></script>
-  <script src="./js/Reversi.js "></script>
-  <script src="./js/ReversiSetting.js "></script>
-  <script src="./js/ReversiPlay.js "></script>
-  <script src="./js/func.js "></script>
+    </script>
+    <script src="./js/bootstrap.min.js "></script>
+    <script src="./js/ReversiPoint.min.js "></script>
+    <script src="./js/ReversiHistory.min.js "></script>
+    <script src="./js/ReversiAnz.min.js "></script>
+    <script src="./js/Reversi.min.js "></script>
+    <script src="./js/ReversiSetting.min.js "></script>
+    <script src="./js/ReversiPlay.min.js "></script>
+    <script src="./js/func.min.js "></script>
 </body>
 
 </html>

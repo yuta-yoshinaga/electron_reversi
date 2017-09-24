@@ -74,6 +74,7 @@ var ReversiSetting = (function () {
         this.mPlayDrawInterVal = DEF_GAME_SPD_MID_VAL; //!< 描画のインターバル(msec)
         this.mEndDrawInterVal = 100; //!< 描画のインターバル(msec)
         this.mEndInterVal = 500; //!< 描画のインターバル(msec)
+        this.mTheme = 'Cerulean'; //!< アプリのテーマ
     }
     return ReversiSetting;
 }());

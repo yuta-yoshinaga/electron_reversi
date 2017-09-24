@@ -1,5 +1,14 @@
 {
   "name": "Reversi",
-  "version": "0.1.0",
-  "main": "main.js"
+  "version": "1.0.0",
+  "main": "main.js",
+  "author": "Yuta Yoshinaga",
+  "copyright": "Copyright (C) 2017 Yuta Yoshinaga.",
+  "version-string": {
+    "CompanyName": "Y.Y Magic",
+    "FileDescription": "Reversi",
+    "OriginalFilename": "Reversi.exe",
+    "ProductName": "Reversi",
+    "InternalName": "Reversi"
+  }
 }
