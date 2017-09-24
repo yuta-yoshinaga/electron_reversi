@@ -129,7 +129,7 @@ function set_masu_size_squer() {
 function appInit() {
     $('.reversi_field').empty();
     for (var i = 0; i < reversiSetting.mMasuCnt; i++) {
-        var row = $('<div class="row"><\/div>');
+        var row = $('<div class="my_row"><\/div>');
         row.addClass('pos_row' + String(i));
         $('.reversi_field').append(row);
         for (var j = 0; j < reversiSetting.mMasuCnt; j++) {
