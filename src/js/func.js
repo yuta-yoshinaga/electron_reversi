@@ -115,8 +115,8 @@ function set_masu_size_squer() {
         viewSize = (devWidth - devOffset);
     }
     masuSize = (viewSize / reversiSetting.mMasuCnt);
-    $('.reversi_field').width(viewSize + 'px');
-    $('.reversi_field').height(viewSize + 'px');
+    $('.reversi_field').width((Math.ceil(masuSize * reversiSetting.mMasuCnt) + 1) + 'px');
+    $('.reversi_field').height((Math.ceil(masuSize * reversiSetting.mMasuCnt) + 1) + 'px');
     $('.reversi_field .square-wrapper').each(function(){
         $(this).css('width', masuSize + 'px');
         $(this).css('height', masuSize + 'px');
