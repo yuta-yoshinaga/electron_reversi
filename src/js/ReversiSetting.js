@@ -76,8 +76,8 @@ var ReversiSetting = (function () {
         this.mEndInterVal = 500; //!< 終了アニメーションのインターバル(msec)
         this.mTheme = 'Cerulean'; //!< テーマ名
         this.mPlayerColor1 = '#000000'; //!< プレイヤー1の色
-        this.mPlayerColor2 = '#FFFFFF'; //!< プレイヤー2の色
-        this.mBackGroundColor = '#00FF00'; //!< 背景の色
+        this.mPlayerColor2 = '#ffffff'; //!< プレイヤー2の色
+        this.mBackGroundColor = '#00ff00'; //!< 背景の色
         this.mBorderColor = '#000000'; //!< 枠線の色
     }
     return ReversiSetting;

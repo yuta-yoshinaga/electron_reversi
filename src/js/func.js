@@ -34,8 +34,8 @@ $(document).ready(function () {
     if(lReversiSetting != null) reversiSetting = JSON.parse(lReversiSetting);
     else                        storage.setItem('appSetting',JSON.stringify(reversiSetting));
     if(reversiSetting.mPlayerColor1 === undefined)      reversiSetting.mPlayerColor1 = '#000000';
-    if(reversiSetting.mPlayerColor2 === undefined)      reversiSetting.mPlayerColor2 = '#FFFFFF';
-    if(reversiSetting.mBackGroundColor === undefined)   reversiSetting.mBackGroundColor = '#00FF00';
+    if(reversiSetting.mPlayerColor2 === undefined)      reversiSetting.mPlayerColor2 = '#ffffff';
+    if(reversiSetting.mBackGroundColor === undefined)   reversiSetting.mBackGroundColor = '#00ff00';
     if(reversiSetting.mBorderColor === undefined)       reversiSetting.mBorderColor = '#000000';
     // *** 設定値をメニューに反映 *** //
     set_menu_ui();
