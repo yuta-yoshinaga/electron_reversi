@@ -1,25 +1,40 @@
 var reversiPlay = new ReversiPlay();
 var reversiSetting = new ReversiSetting();
+var reversiSettingBk = reversiSetting;
 var storage = localStorage;
 $(document).ready(function () {
+    jQuery('.minicolor').each(function() {
+        //
+        // Dear reader, it's actually very easy to initialize MiniColors. For example:
+        //
+        //  jQuery(selector).minicolors();
+        //
+        // The way I've done it below is just for the demo, so don't get confused
+        // by it. Also, data- attributes aren't supported at this time...they're
+        // only used for this demo.
+        //
+        jQuery(this).minicolors({
+            control: jQuery(this).attr('data-control') || 'hue',
+            defaultValue: jQuery(this).attr('data-defaultValue') || '',
+            inline: jQuery(this).attr('data-inline') === 'true',
+            letterCase: jQuery(this).attr('data-letterCase') || 'lowercase',
+            opacity: jQuery(this).attr('data-opacity'),
+            position: jQuery(this).attr('data-position') || 'bottom left',
+            change: function(hex, opacity) {
+                if (!hex) return;
+                if (typeof console === 'object') {
+                    //console.log(hex + ' ' + this.id);
+                }
+            },
+            theme: 'bootstrap'
+        });
+    });
     //storage.clear();
     var lReversiSetting = storage.getItem('appSetting');
     if(lReversiSetting != null) reversiSetting = JSON.parse(lReversiSetting);
     else                        storage.setItem('appSetting',JSON.stringify(reversiSetting));
     // *** 設定値をメニューに反映 *** //
-    var ele;
-    ele = $('#mMode input[value="' + Number(reversiSetting.mMode) + '"]').parent().addClass('active');
-    ele = $('#mType input[value="' + Number(reversiSetting.mType) + '"]').parent().addClass('active');
-    ele = $('#mPlayer input[value="' + Number(reversiSetting.mPlayer) + '"]').parent().addClass('active');
-    ele = $('#mAssist input[value="' + Number(reversiSetting.mAssist) + '"]').parent().addClass('active');
-    ele = $('#mGameSpd input[value="' + Number(reversiSetting.mGameSpd) + '"]').parent().addClass('active');
-    ele = $('#mEndAnim input[value="' + Number(reversiSetting.mEndAnim) + '"]').parent().addClass('active');
-    ele = $('#mMasuCntMenu input[value="' + Number(reversiSetting.mMasuCntMenu) + '"]').parent().addClass('active');
-    ele = $('#mTheme input[value="' + reversiSetting.mTheme + '"]').parent().addClass('active');
-    var oldTheme = reversiSetting.mTheme;
-    $('head link[href=".\/css\/theme\/' + oldTheme + '\/bootstrap.min.css"]').remove();
-    var addEle = '<link href=".\/css\/theme\/' + reversiSetting.mTheme + '\/bootstrap.min.css" rel="stylesheet" media="screen">';
-    $('head').append(addEle);
+    set_menu_ui();
     // *** マスを用意 *** //
     appInit();
     reversiPlay.setSetting(reversiSetting);
@@ -33,6 +48,9 @@ $(document).ready(function () {
     });
     $('.reversi_field').on('click', '.reset', function () {
         reversiPlay.reset();
+    });
+    $('.reversi_field').on('click', '.setting', function () {
+        reversiSettingBk = reversiSetting;
     });
     $('#appMenuModal').on('click', '.btn-primary', function () {
         reversiSetting.mMode = $("#mMode .active input").val();
@@ -71,12 +89,27 @@ $(document).ready(function () {
         $('head link[href=".\/css\/theme\/' + oldTheme + '\/bootstrap.min.css"]').remove();
         var addEle = '<link href=".\/css\/theme\/' + reversiSetting.mTheme + '\/bootstrap.min.css" rel="stylesheet" media="screen">';
         $('head').append(addEle);
+
+        reversiSetting.mPlayerColor1 = $('#mPlayerColor1 input').val();
+        reversiSetting.mPlayerColor2 = $('#mPlayerColor2 input').val();
+        reversiSetting.mBackGroundColor = $('#mBackGroundColor input').val();
+        reversiSetting.mBorderColor = $('#mBorderColor input').val();
         
         storage.setItem('appSetting',JSON.stringify(reversiSetting));       
         appInit();
         reversiPlay.setSetting(reversiSetting);
         reversiPlay.reset();
         console.log(reversiSetting);      
+    });
+    $('#appMenuModal').on('click', '.btn-warning', function () {
+        // *** デフォルト設定 *** //
+        reversiSetting = new ReversiSetting();
+        set_menu_ui();
+    });
+    $('#appMenuModal').on('click', '.btn-default', function () {
+        // *** キャンセル *** //
+        reversiSetting = reversiSettingBk;
+        set_menu_ui();
     });
     // *** ダイアログクローズイベント *** //
     $('#appMenuModal').on('hidden.bs.modal', function () {
@@ -98,6 +131,89 @@ $(document).ready(function () {
 $(window).load(function () {
     set_masu_size_squer();
 });
+
+function cnvHexToRgb(hexVal) {
+    var str = hexVal.toString();
+
+    if (str.length < 6) {
+      // #abcをa,b,cに分割
+      var hex_3digit = str.match(/^#([0-9a-f]{1})([0-9a-f]{1})([0-9a-f]{1})/);
+      // aa
+      var hex_r = hex_3digit[1] + hex_3digit[1];
+      // bb
+      var hex_g = hex_3digit[2] + hex_3digit[2];
+      // cc
+      var hex_b = hex_3digit[3] + hex_3digit[3];
+    } else {
+      // #abcdefをab,cd,efに分割
+      var hex_6digit = str.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/);
+      // ab
+      var hex_r = hex_6digit[1];
+      // cd
+      var hex_g = hex_6digit[2];
+      // ef
+      var hex_b = hex_6digit[3];
+    }
+
+    // 16進数から10進数へ
+    var rgb_r = parseInt(hex_r, 16);
+    var rgb_g = parseInt(hex_g, 16);
+    var rgb_b = parseInt(hex_b, 16);
+
+    rgbObj = new Object();
+    rgbObj.r = rgb_r;
+    rgbObj.g = rgb_g;
+    rgbObj.b = rgb_b;
+
+    return rgbObj;
+}
+
+function cnvRgbToHex(r,g,b) {
+    var rgb_r = r.toString(10);
+    var rgb_g = g.toString(10);
+    var rgb_b = b.toString(10);
+
+    // 10進数から16進数へ
+    var hex_r = (parseInt(rgb_r)).toString(16);
+    var hex_g = (parseInt(rgb_g)).toString(16);
+    var hex_b = (parseInt(rgb_b)).toString(16);
+
+    // 1桁の場合は0をつける
+    hex_r = hex_r.replace(/(^[0-9a-f]{1}$)/, '0$1');
+    hex_g = hex_g.replace(/(^[0-9a-f]{1}$)/, '0$1');
+    hex_b = hex_b.replace(/(^[0-9a-f]{1}$)/, '0$1');
+
+    var hex = '#' + hex_r + hex_g + hex_b;
+
+    return hex;
+}
+
+function set_menu_ui() {
+    $('#appMenuModal .appMenuGrp label').each(function(){
+        $(this).removeClass('active');
+    });
+    var ele;
+    ele = $('#mMode input[value="' + Number(reversiSetting.mMode) + '"]').parent().addClass('active');
+    ele = $('#mType input[value="' + Number(reversiSetting.mType) + '"]').parent().addClass('active');
+    ele = $('#mPlayer input[value="' + Number(reversiSetting.mPlayer) + '"]').parent().addClass('active');
+    ele = $('#mAssist input[value="' + Number(reversiSetting.mAssist) + '"]').parent().addClass('active');
+    ele = $('#mGameSpd input[value="' + Number(reversiSetting.mGameSpd) + '"]').parent().addClass('active');
+    ele = $('#mEndAnim input[value="' + Number(reversiSetting.mEndAnim) + '"]').parent().addClass('active');
+    ele = $('#mMasuCntMenu input[value="' + Number(reversiSetting.mMasuCntMenu) + '"]').parent().addClass('active');
+    ele = $('#mTheme input[value="' + reversiSetting.mTheme + '"]').parent().addClass('active');
+    ele = $('#mPlayerColor1 input').attr('value',reversiSetting.mPlayerColor1);
+    ele = $('#mPlayerColor1 input').minicolors('value',reversiSetting.mPlayerColor1);
+    ele = $('#mPlayerColor2 input').attr('value',reversiSetting.mPlayerColor2);
+    ele = $('#mPlayerColor2 input').minicolors('value',reversiSetting.mPlayerColor2);
+    ele = $('#mBackGroundColor input').attr('value',reversiSetting.mBackGroundColor);
+    ele = $('#mBackGroundColor input').minicolors('value',reversiSetting.mBackGroundColor);
+    ele = $('#mBorderColor input').attr('value',reversiSetting.mBorderColor);
+    ele = $('#mBorderColor input').minicolors('value',reversiSetting.mBorderColor);
+    var oldTheme = reversiSetting.mTheme;
+    $('head link[href=".\/css\/theme\/' + oldTheme + '\/bootstrap.min.css"]').remove();
+    var addEle = '<link href=".\/css\/theme\/' + reversiSetting.mTheme + '\/bootstrap.min.css" rel="stylesheet" media="screen">';
+    $('head').append(addEle);
+}
 
 function set_masu_size_squer() {
     var devHeight = $(window).height();
@@ -138,6 +254,7 @@ function appInit() {
             ele.addClass('pos_y' + String(i));
             ele.attr('data-x', String(j));
             ele.attr('data-y', String(i));
+            ele.css('border-color', reversiSetting.mBorderColor);
             $('.pos_row' + String(i)).append(ele);
         }
     }
@@ -174,35 +291,63 @@ function drawSingle(y, x, sts, bk, text) {
     if (sts == REVERSI_STS_NONE) {
         tgtEle2.removeClass('stone_white');
         tgtEle2.removeClass('stone_black');
+        tgtEle2.css('background-color', 'transparent');
     } else if (sts == REVERSI_STS_BLACK) {
         tgtEle2.removeClass('stone_white');
         tgtEle2.addClass('stone_black');
+        tgtEle2.css('background-color', reversiSetting.mPlayerColor1);
     } else if (sts == REVERSI_STS_WHITE) {
         tgtEle2.addClass('stone_white');
         tgtEle2.removeClass('stone_black');
+        tgtEle2.css('background-color', reversiSetting.mPlayerColor2);
     }
     // *** マスの状態変更 *** //
+    var bkCol = reversiSetting.mBackGroundColor;
     if (bk == 1) {
         tgtEle.removeClass('cell_back_green');
         tgtEle.removeClass('cell_back_magenta');
         tgtEle.removeClass('cell_back_red');
         tgtEle.addClass('cell_back_blue');
+        // *** 色変換 *** //
+        var cnvCol = cnvHexToRgb(bkCol);
+        cnvCol.g -= 127;
+        if(cnvCol.g < 0) cnvCol.g += 255;
+        cnvCol.b += 255;
+        if(255 < cnvCol.b) cnvCol.b -= 255;
+        bkCol = cnvRgbToHex(cnvCol.r,cnvCol.g,cnvCol.b);
     } else if (bk == 2) {
         tgtEle.removeClass('cell_back_green');
         tgtEle.removeClass('cell_back_magenta');
         tgtEle.addClass('cell_back_red');
         tgtEle.removeClass('cell_back_blue');
+        // *** 色変換 *** //
+        var cnvCol = cnvHexToRgb(bkCol);
+        cnvCol.r += 255;
+        if(255 < cnvCol.r) cnvCol.r -= 255;
+        cnvCol.g -= 127;
+        if(cnvCol.g < 0) cnvCol.g += 255;
+        cnvCol.b -= 127;
+        if(cnvCol.b < 0) cnvCol.b += 255;
+        bkCol = cnvRgbToHex(cnvCol.r,cnvCol.g,cnvCol.b);
     } else if (bk == 3) {
         tgtEle.removeClass('cell_back_green');
         tgtEle.addClass('cell_back_magenta');
         tgtEle.removeClass('cell_back_red');
         tgtEle.removeClass('cell_back_blue');
+        // *** 色変換 *** //
+        var cnvCol = cnvHexToRgb(bkCol);
+        cnvCol.r += 255;
+        if(255 < cnvCol.r) cnvCol.r -= 255;
+        cnvCol.b += 255;
+        if(255 < cnvCol.b) cnvCol.b -= 255;
+        bkCol = cnvRgbToHex(cnvCol.r,cnvCol.g,cnvCol.b);
     } else {
         tgtEle.addClass('cell_back_green');
         tgtEle.removeClass('cell_back_magenta');
         tgtEle.removeClass('cell_back_red');
         tgtEle.removeClass('cell_back_blue');
     }
+    tgtEle.css('background-color', bkCol);
     // *** テキストの状態変更 *** //
     tgtEle2.text(text);
 }

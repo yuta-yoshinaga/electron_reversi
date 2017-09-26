@@ -72,9 +72,13 @@ var ReversiSetting = (function () {
         this.mMasuCnt = DEF_MASU_CNT_8_VAL; //!< マスの数
         this.mPlayCpuInterVal = DEF_GAME_SPD_MID_VAL2; //!< CPU対戦時のインターバル(msec)
         this.mPlayDrawInterVal = DEF_GAME_SPD_MID_VAL; //!< 描画のインターバル(msec)
-        this.mEndDrawInterVal = 100; //!< 描画のインターバル(msec)
-        this.mEndInterVal = 500; //!< 描画のインターバル(msec)
-        this.mTheme = 'Cerulean'; //!< アプリのテーマ
+        this.mEndDrawInterVal = 100; //!< 終了アニメーション描画のインターバル(msec)
+        this.mEndInterVal = 500; //!< 終了アニメーションのインターバル(msec)
+        this.mTheme = 'Cerulean'; //!< テーマ名
+        this.mPlayerColor1 = '#000000'; //!< プレイヤー1の色
+        this.mPlayerColor2 = '#FFFFFF'; //!< プレイヤー2の色
+        this.mBackGroundColor = '#00FF00'; //!< 背景の色
+        this.mBorderColor = '#000000'; //!< 枠線の色
     }
     return ReversiSetting;
 }());

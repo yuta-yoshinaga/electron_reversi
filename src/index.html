@@ -7,6 +7,7 @@
     <title>Reversi</title>
     <link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="./css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
+    <link href="./css/jquery.minicolors.css" rel="stylesheet" media="screen">
     <link href="./css/style.css" rel="stylesheet" media="screen">
 </head>
 
@@ -53,9 +54,9 @@
                         <hr>
                         <div class="btn-group" data-toggle="buttons">
                             <label class="btn btn-info btn-sm">
-                                <input type="radio" autocomplete="off" value="1">黒</label>
+                                <input type="radio" autocomplete="off" value="1">ﾌﾟﾚｲﾔｰ1</label>
                             <label class="btn btn-info btn-sm">
-                                <input type="radio" autocomplete="off" value="2">白</label>
+                                <input type="radio" autocomplete="off" value="2">ﾌﾟﾚｲﾔｰ2</label>
                         </div>
                         <hr>
                     </div>
@@ -154,10 +155,43 @@
                         </div>
                         <hr>
                     </div>
+                     <div class="appMenuGrp col-sm-4 col-xs-6" id="mPlayerColor1">
+                        <div>プレイヤー1のコマの色</div>
+                        <hr>
+                        <div>
+                            <input id="playerColor1" type="text" class="minicolor" data-control="wheel" value="#000000" style="height:34px;">
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="appMenuGrp col-sm-4 col-xs-6" id="mPlayerColor2">
+                        <div>プレイヤー2のコマの色</div>
+                        <hr>
+                        <div>
+                            <input id="playerColor2" type="text" class="minicolor" data-control="wheel" value="#ffffff" style="height:34px;">
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="appMenuGrp col-sm-4 col-xs-6" id="mBackGroundColor">
+                        <div>マス背景の色</div>
+                        <hr>
+                        <div>
+                            <input id="backGrdColor" type="text" class="minicolor" data-control="wheel" value="#00ff00" style="height:34px;">
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="appMenuGrp col-sm-4 col-xs-6" id="mBorderColor">
+                        <div>マス枠の色</div>
+                        <hr>
+                        <div>
+                            <input id="borderColor" type="text" class="minicolor" data-control="wheel" value="#000000" style="height:34px;">
+                        </div>
+                        <hr>
+                    </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                    <button type="button" class="btn btn-warning" >デフォルト設定</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal">適用</button>
                 </div>
             </div>
@@ -168,6 +202,7 @@
     window.jQuery = window.$ = require('./js/jquery-1.12.4.min.js');
     </script>
     <script src="./js/bootstrap.min.js "></script>
+    <script src="./js/jquery.minicolors.min.js"></script>
     <script src="./js/ReversiPoint.min.js "></script>
     <script src="./js/ReversiHistory.min.js "></script>
     <script src="./js/ReversiAnz.min.js "></script>

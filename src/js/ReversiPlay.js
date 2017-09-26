@@ -217,7 +217,7 @@ var ReversiPlay = (function () {
                 var blk, whi;
                 blk = _this.mReversi.getBetCnt(REVERSI_STS_BLACK);
                 whi = _this.mReversi.getBetCnt(REVERSI_STS_WHITE);
-                tmpMsg1 = '黒 = ' + String(blk) + ' 白 = ' + String(whi);
+                tmpMsg1 = 'プレイヤー1 = ' + String(blk) + ' プレイヤー2 = ' + String(whi);
                 if (_this.mSetting.mMode == DEF_MODE_ONE) {
                     if (whi == blk)
                         tmpMsg2 = '引き分けです。';
@@ -238,9 +238,9 @@ var ReversiPlay = (function () {
                     if (whi == blk)
                         tmpMsg2 = '引き分けです。';
                     else if (whi < blk)
-                        tmpMsg2 = '黒の勝ちです。';
+                        tmpMsg2 = 'プレイヤー1の勝ちです。';
                     else
-                        tmpMsg2 = '白の勝ちです。';
+                        tmpMsg2 = 'プレイヤー2の勝ちです。';
                 }
                 msgStr = tmpMsg1 + tmpMsg2;
                 _this.viewMsgDlg('ゲーム終了', msgStr);
@@ -273,9 +273,9 @@ var ReversiPlay = (function () {
         }
         else {
             if (color == REVERSI_STS_BLACK)
-                this.viewMsgDlg('', '黒はパスです。');
+                this.viewMsgDlg('', 'プレイヤー1はパスです。');
             else
-                this.viewMsgDlg('', '白はパスです。');
+                this.viewMsgDlg('', 'プレイヤー2はパスです。');
         }
     };
     ////////////////////////////////////////////////////////////////////////////////
@@ -953,15 +953,15 @@ var ReversiPlay = (function () {
             var tmpStr = '';
             if (this.mSetting.mMode == DEF_MODE_ONE) {
                 if (this.mCurColor == REVERSI_STS_BLACK)
-                    tmpStr = 'あなたは黒です ';
+                    tmpStr = 'あなたはプレイヤー1です ';
                 else
-                    tmpStr = 'あなたは白です ';
+                    tmpStr = 'あなたはプレイヤー2です ';
             }
             else {
                 if (this.mCurColor == REVERSI_STS_BLACK)
-                    tmpStr = '黒の番です ';
+                    tmpStr = 'プレイヤー1の番です ';
                 else
-                    tmpStr = '白の番です ';
+                    tmpStr = 'プレイヤー2の番です ';
             }
             this.curColMsg(tmpStr);
         }
@@ -969,7 +969,7 @@ var ReversiPlay = (function () {
             this.curColMsg('');
         }
         else if (what == LC_MSG_CUR_STS) {
-            var tmpStr = '黒 = ' + this.mReversi.getBetCnt(REVERSI_STS_BLACK) + ' 白 = ' + this.mReversi.getBetCnt(REVERSI_STS_WHITE);
+            var tmpStr = 'プレイヤー1 = ' + this.mReversi.getBetCnt(REVERSI_STS_BLACK) + ' プレイヤー2 = ' + this.mReversi.getBetCnt(REVERSI_STS_WHITE);
             this.curStsMsg(tmpStr);
         }
         else if (what == LC_MSG_CUR_STS_ERASE) {
