@@ -141,7 +141,7 @@ function cnvHexToRgb(hexVal) {
 
     if (str.length < 6) {
       // #abcをa,b,cに分割
-      var hex_3digit = str.match(/^#([0-9a-f]{1})([0-9a-f]{1})([0-9a-f]{1})/);
+      var hex_3digit = str.match(/^#([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})/);
       // aa
       var hex_r = hex_3digit[1] + hex_3digit[1];
       // bb
@@ -150,7 +150,7 @@ function cnvHexToRgb(hexVal) {
       var hex_b = hex_3digit[3] + hex_3digit[3];
     } else {
       // #abcdefをab,cd,efに分割
-      var hex_6digit = str.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/);
+      var hex_6digit = str.match(/^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})/);
       // ab
       var hex_r = hex_6digit[1];
       // cd
@@ -183,9 +183,9 @@ function cnvRgbToHex(r,g,b) {
     var hex_b = (parseInt(rgb_b)).toString(16);
 
     // 1桁の場合は0をつける
-    hex_r = hex_r.replace(/(^[0-9a-f]{1}$)/, '0$1');
-    hex_g = hex_g.replace(/(^[0-9a-f]{1}$)/, '0$1');
-    hex_b = hex_b.replace(/(^[0-9a-f]{1}$)/, '0$1');
+    hex_r = hex_r.replace(/(^[0-9a-fA-F]{1}$)/, '0$1');
+    hex_g = hex_g.replace(/(^[0-9a-fA-F]{1}$)/, '0$1');
+    hex_b = hex_b.replace(/(^[0-9a-fA-F]{1}$)/, '0$1');
 
     var hex = '#' + hex_r + hex_g + hex_b;
 
