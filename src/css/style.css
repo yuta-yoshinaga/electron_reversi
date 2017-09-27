@@ -55,3 +55,7 @@ body{
 .cell_back_blue {
     background-color: #0080FF;
 }
+
+#ad_div{
+    display:none !important;
+}
