@@ -81,6 +81,9 @@ var ReversiPlay = (function () {
         var tmpCol = this.mCurColor;
         var ret;
         var pass = 0;
+        if (this.mPlayLock == 1)
+            return;
+        this.mPlayLock = 1;
         if (this.mReversi.getColorEna(this.mCurColor) == 0) {
             if (this.mReversi.setMasuSts(this.mCurColor, y, x) == 0) {
                 if (this.mSetting.mType == DEF_TYPE_HARD)
@@ -164,7 +167,11 @@ var ReversiPlay = (function () {
             var _this = this;
             setTimeout(function (cpuEna, tmpCol) {
                 _this.reversiPlaySub(cpuEna, tmpCol);
+                _this.mPlayLock = 0;
             }, waitTime, cpuEna, tmpCol);
+        }
+        else {
+            this.mPlayLock = 0;
         }
     };
     ////////////////////////////////////////////////////////////////////////////////
@@ -209,8 +216,10 @@ var ReversiPlay = (function () {
     ////////////////////////////////////////////////////////////////////////////////
     ReversiPlay.prototype.reversiPlayEnd = function () {
         if (this.mGameEndSts == 0) {
+            this.mGameEndSts = 1;
             var waitTime = this.gameEndAnimExec(); // 終了アニメ実行
             var _this = this;
+            this.mPlayLock = 1;
             setTimeout(function () {
                 // *** ゲーム終了メッセージ *** //
                 var tmpMsg1, tmpMsg2, msgStr;
@@ -250,7 +259,6 @@ var ReversiPlay = (function () {
                     // *** メッセージ送信 *** //
                     _this.execMessage(LC_MSG_CUR_STS, null);
                 }
-                _this.mGameEndSts = 1;
             }, waitTime);
         }
     };
