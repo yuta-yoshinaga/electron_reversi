@@ -242,7 +242,8 @@ function set_masu_size_squer() {
         $(this).css('height', masuSize + 'px');
     });
     $('.reversi_field .square-wrapper .content').each(function(){
-        $(this).css('line-height', $(this).height() + 'px');
+//        $(this).css('line-height', $(this).height() + 'px');
+        $(this).css('line-height', (masuSize * 0.9) + 'px');
     });
 }
 
