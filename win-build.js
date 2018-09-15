@@ -1,12 +1,12 @@
 const packager = require("electron-packager");
 // 毎回オプションを書き直すのは面倒くさいのでpackage.jsonから引っ張ってくる
-const package = require("./src/package.json");
+const package = require("./docs/package.json");
 
 packager({
     name: package["name"],
-    dir: "./src",// ソースフォルダのパス
+    dir: "./docs",// ソースフォルダのパス
     out: "./",// 出力先フォルダのパス
-    icon: "./src/images/icon.ico",// アイコンのパス
+    icon: "./docs/images/icon.ico",// アイコンのパス
     platform: "win32",
     arch: "x64",
     version: "1.4.15",// Electronのバージョン
